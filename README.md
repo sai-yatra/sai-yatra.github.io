@@ -1,6 +1,6 @@
 # Travel Itinerary Editor
 
-A web-based application to create, edit, and manage travel itineraries with bilingual support (English/Tamil).
+A web-based application to create, edit, and manage travel itineraries.
 
 ## Features
 
@@ -81,7 +81,7 @@ Click the hamburger menu in the top-right corner to access:
 
 # பயண நிகழ்ச்சி திட்டமிடல் எடிட்டர்
 
-ஆங்கிலம்/தமிழ் இரு மொழி ஆதரவுடன் பயண நிகழ்ச்சி திட்டங்களை உருவாக்க, திருத்த மற்றும் நிர்வகிக்க ஒரு இணைய அடிப்படையிலான பயன்பாடு.
+பயண நிகழ்ச்சி திட்டங்களை உருவாக்க, திருத்த மற்றும் நிர்வகிக்க ஒரு இணைய அடிப்படையிலான பயன்பாடு.
 
 ## அம்சங்கள்
 
