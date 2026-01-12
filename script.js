@@ -609,7 +609,11 @@ function copyFormatted() {
                 });
             }
         });
-        text += `\n-------------\n\n`;
+        if (idx < data.days.length - 1) {
+            text += `\n-------------\n\n`;
+        } else {
+            text += `\n`;
+        }
     });
 
     data.sections.forEach(section => {
