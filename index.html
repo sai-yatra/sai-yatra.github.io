@@ -12,9 +12,32 @@
     <div class="container">
         <div class="header">
             <h1>Travel Itinerary Editor</h1>
-            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
-                <span class="theme-icon">🌙</span>
-            </button>
+            <div class="menu-container">
+                <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMenu()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <button class="menu-item" onclick="toggleTheme()">
+                        <span class="theme-icon" id="themeIcon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                            </svg>
+                        </span>
+                        <span>Toggle Theme</span>
+                    </button>
+                    <button class="menu-item" onclick="resetToOriginal()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="1 4 1 10 7 10"></polyline>
+                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                        </svg>
+                        <span>Reset to Original</span>
+                    </button>
+                </div>
+            </div>
         </div>
         
         <div class="content" id="content">

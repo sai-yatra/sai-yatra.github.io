@@ -1,4 +1,7 @@
-let data = {
+const STORAGE_KEY = 'sai_itinerary_data';
+const THEME_KEY = 'sai_itinerary_theme';
+
+const originalData = {
     title: "Shirdi Sai Yatra Itinerary / சீரடி சாய் யாத்திரை",
     dates: "Jan 17 - Jan 19, 2026",
     organizer: "Sai Balaji V",
@@ -75,12 +78,13 @@ let data = {
     footer: "Om Sai Ram! 🙏 \"Think of Baba Always\" / \"பாபாவை நினை\""
 };
 
+let data = JSON.parse(JSON.stringify(originalData));
 let collapsedSections = {};
 let autoSaveTimeout = null;
 
 // Theme management
 function initTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
+    const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateThemeIcon(savedTheme);
 }
@@ -89,16 +93,46 @@ function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
+    localStorage.setItem(THEME_KEY, newTheme);
     updateThemeIcon(newTheme);
+    toggleMenu();
 }
 
 function updateThemeIcon(theme) {
-    const icon = document.querySelector('.theme-icon');
-    if (icon) {
-        icon.textContent = theme === 'light' ? '🌙' : '☀️';
+    const iconContainer = document.getElementById('themeIcon');
+    if (iconContainer) {
+        if (theme === 'light') {
+            iconContainer.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+        } else {
+            iconContainer.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+        }
     }
 }
+
+function toggleMenu() {
+    const menu = document.getElementById('dropdownMenu');
+    menu.classList.toggle('show');
+}
+
+function resetToOriginal() {
+    if (confirm('Are you sure you want to reset all data to original? This cannot be undone.')) {
+        localStorage.removeItem(STORAGE_KEY);
+        data = JSON.parse(JSON.stringify(originalData));
+        collapsedSections = {};
+        render();
+        showToast('Reset to original data!');
+        toggleMenu();
+    }
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', (e) => {
+    const menu = document.getElementById('dropdownMenu');
+    const hamburger = document.getElementById('hamburgerBtn');
+    if (menu && hamburger && !menu.contains(e.target) && !hamburger.contains(e.target)) {
+        menu.classList.remove('show');
+    }
+});
 
 function toggleSection(id) {
     collapsedSections[id] = !collapsedSections[id];
@@ -173,7 +207,7 @@ function saveData() {
         });
 
         data = state;
-        localStorage.setItem('itineraryData', JSON.stringify(state));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         showToast('Saved successfully!');
     } catch (e) {
         console.error('Save error:', e);
@@ -249,7 +283,7 @@ function autoSave() {
         });
 
         data = state;
-        localStorage.setItem('itineraryData', JSON.stringify(state));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch (e) {
         console.error('Auto-save error:', e);
     }
@@ -265,7 +299,7 @@ function scheduleAutoSave() {
 }
 
 function loadData() {
-    const saved = localStorage.getItem('itineraryData');
+    const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
         try {
             const parsed = JSON.parse(saved);
@@ -277,7 +311,7 @@ function loadData() {
             }
         } catch (e) {
             console.error('Error loading data:', e);
-            localStorage.removeItem('itineraryData');
+            localStorage.removeItem(STORAGE_KEY);
         }
     }
 }
@@ -575,16 +609,11 @@ function copyFormatted() {
                 });
             }
         });
-        if (idx < data.days.length - 1) {
-            text += `\n-------------\n\n`;
-        } else {
-            text += `\n`;
-        }
+        text += `\n-------------\n\n`;
     });
 
-    text += `--------------------------\n\n`;
-
     data.sections.forEach(section => {
+        text += `--------------------------\n\n`;
         text += `*${section.title}*\n\n`;
         section.items.forEach((item, idx) => {
             text += `*${idx + 1}. ${item.title}*: ${item.description}\n`;
@@ -592,6 +621,7 @@ function copyFormatted() {
         text += `\n`;
     });
 
+    text += `--------------------------\n\n`;
     text += `*${data.footer}*\n`;
 
     navigator.clipboard.writeText(text).then(() => {
