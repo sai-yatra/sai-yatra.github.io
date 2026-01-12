@@ -76,6 +76,7 @@ let data = {
 };
 
 let collapsedSections = {};
+let autoSaveTimeout = null;
 
 // Theme management
 function initTheme() {
@@ -180,6 +181,89 @@ function saveData() {
     }
 }
 
+function autoSave() {
+    try {
+        const state = {
+            title: document.getElementById('title')?.value || '',
+            dates: document.getElementById('dates')?.value || '',
+            organizer: document.getElementById('organizer')?.value || '',
+            contacts: document.getElementById('contacts')?.value || '',
+            days: [],
+            sections: [],
+            footer: document.getElementById('footer')?.value || ''
+        };
+
+        document.querySelectorAll('.day-section').forEach(dayEl => {
+            const dayTitle = dayEl.querySelector('.day-title');
+            if (!dayTitle) return;
+            
+            const day = {
+                title: dayTitle.value,
+                activities: []
+            };
+            
+            dayEl.querySelectorAll('.activity-item').forEach(actEl => {
+                const timeInput = actEl.querySelector('.activity-time');
+                const descInput = actEl.querySelector('.activity-desc');
+                
+                if (!timeInput || !descInput) return;
+                
+                const activity = {
+                    time: timeInput.value,
+                    description: descInput.value
+                };
+                
+                const subItems = actEl.querySelectorAll('.sub-item-input');
+                if (subItems.length > 0) {
+                    activity.subItems = Array.from(subItems).map(s => s.value);
+                }
+                
+                day.activities.push(activity);
+            });
+            
+            state.days.push(day);
+        });
+
+        document.querySelectorAll('.custom-section').forEach(secEl => {
+            const sectionTitle = secEl.querySelector('.section-title-input');
+            if (!sectionTitle) return;
+            
+            const section = {
+                title: sectionTitle.value,
+                items: []
+            };
+            
+            secEl.querySelectorAll('.instruction-item').forEach(itemEl => {
+                const titleInput = itemEl.querySelector('.instruction-title-input');
+                const descInput = itemEl.querySelector('.instruction-desc-input');
+                
+                if (titleInput && descInput) {
+                    section.items.push({
+                        title: titleInput.value,
+                        description: descInput.value
+                    });
+                }
+            });
+            
+            state.sections.push(section);
+        });
+
+        data = state;
+        localStorage.setItem('itineraryData', JSON.stringify(state));
+    } catch (e) {
+        console.error('Auto-save error:', e);
+    }
+}
+
+function scheduleAutoSave() {
+    if (autoSaveTimeout) {
+        clearTimeout(autoSaveTimeout);
+    }
+    autoSaveTimeout = setTimeout(() => {
+        autoSave();
+    }, 500);
+}
+
 function loadData() {
     const saved = localStorage.getItem('itineraryData');
     if (saved) {
@@ -211,6 +295,22 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+function setupAutoSaveListeners() {
+    const content = document.getElementById('content');
+    
+    content.addEventListener('input', (e) => {
+        if (e.target.matches('input, textarea')) {
+            scheduleAutoSave();
+        }
+    });
+    
+    content.addEventListener('blur', (e) => {
+        if (e.target.matches('input, textarea')) {
+            autoSave();
+        }
+    }, true);
 }
 
 function render() {
@@ -368,9 +468,11 @@ function render() {
     `;
     
     content.innerHTML = html;
+    setupAutoSaveListeners();
 }
 
 function addDay() {
+    autoSave();
     data.days.push({
         title: 'New Day',
         activities: []
@@ -380,12 +482,14 @@ function addDay() {
 
 function removeDay(idx) {
     if (confirm('Are you sure you want to remove this day?')) {
+        autoSave();
         data.days.splice(idx, 1);
         render();
     }
 }
 
 function addActivity(dayIdx) {
+    autoSave();
     data.days[dayIdx].activities.push({
         time: '',
         description: ''
@@ -395,12 +499,14 @@ function addActivity(dayIdx) {
 
 function removeActivity(dayIdx, actIdx) {
     if (confirm('Are you sure you want to remove this activity?')) {
+        autoSave();
         data.days[dayIdx].activities.splice(actIdx, 1);
         render();
     }
 }
 
 function addSubItem(dayIdx, actIdx) {
+    autoSave();
     if (!data.days[dayIdx].activities[actIdx].subItems) {
         data.days[dayIdx].activities[actIdx].subItems = [];
     }
@@ -409,6 +515,7 @@ function addSubItem(dayIdx, actIdx) {
 }
 
 function removeSubItem(dayIdx, actIdx, subIdx) {
+    autoSave();
     data.days[dayIdx].activities[actIdx].subItems.splice(subIdx, 1);
     if (data.days[dayIdx].activities[actIdx].subItems.length === 0) {
         delete data.days[dayIdx].activities[actIdx].subItems;
@@ -417,6 +524,7 @@ function removeSubItem(dayIdx, actIdx, subIdx) {
 }
 
 function addSection() {
+    autoSave();
     data.sections.push({
         title: 'New Section',
         items: []
@@ -426,12 +534,14 @@ function addSection() {
 
 function removeSection(idx) {
     if (confirm('Are you sure you want to remove this section?')) {
+        autoSave();
         data.sections.splice(idx, 1);
         render();
     }
 }
 
 function addSectionItem(secIdx) {
+    autoSave();
     data.sections[secIdx].items.push({
         title: '',
         description: ''
@@ -441,13 +551,14 @@ function addSectionItem(secIdx) {
 
 function removeSectionItem(secIdx, itemIdx) {
     if (confirm('Are you sure you want to remove this item?')) {
+        autoSave();
         data.sections[secIdx].items.splice(itemIdx, 1);
         render();
     }
 }
 
 function copyFormatted() {
-    saveData();
+    autoSave();
     
     let text = `*${data.title}*\n\n`;
     text += `Dates: *${data.dates}*\n`;
