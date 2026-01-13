@@ -393,8 +393,10 @@ function render() {
     `;
 
     data.days.forEach((day, dayIdx) => {
+        const dayClass = dayIdx % 2 === 0 ? 'day-odd' : 'day-even';
+
         html += `
-            <div class="section day-section">
+            <div class="section day-section ${dayClass}">
                 <div class="section-controls">
                     <button class="collapse-btn" onclick="toggleSection('day-${dayIdx}')">
                         <span class="collapse-icon ${collapsedSections['day-' + dayIdx] ? 'collapsed' : ''}">▼</span>
