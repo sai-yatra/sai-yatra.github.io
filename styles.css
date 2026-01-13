@@ -162,7 +162,45 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 4px var(--shadow);
     margin-bottom: 16px;
-    margin-top: 50px;
+}
+
+.usage-note {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    margin-top: 20px;
+}
+
+.usage-note h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.usage-note ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.usage-note li {
+    padding: 8px 0;
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.5;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.usage-note li:last-child {
+    border-bottom: none;
+}
+
+.usage-note strong {
+    color: var(--accent-color);
+    font-weight: 600;
 }
 
 .section {
@@ -246,6 +284,13 @@ body {
     font-size: 15px;
     font-weight: 600;
     transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn svg {
+    vertical-align: middle;
 }
 
 .btn-primary {
@@ -487,7 +532,6 @@ textarea {
 
     .content {
         padding: 12px;
-        margin-top: 30px;
     }
 
     .section-body {

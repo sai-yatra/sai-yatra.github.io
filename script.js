@@ -513,8 +513,21 @@ function render() {
         </div>
 
         <div class="actions">
-            <button class="btn btn-primary" onclick="saveData()">💾 Save</button>
-            <button class="btn btn-success" onclick="copyFormatted()">📋 Copy Formatted Text</button>
+            <button class="btn btn-primary" onclick="saveData()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                    <polyline points="7 3 7 8 15 8"></polyline>
+                </svg>
+                Save
+            </button>
+            <button class="btn btn-success" onclick="copyFormatted()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy Formatted Text
+            </button>
         </div>
     `;
     
