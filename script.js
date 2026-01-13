@@ -394,9 +394,11 @@ function render() {
 
     data.days.forEach((day, dayIdx) => {
         const dayClass = dayIdx % 2 === 0 ? 'day-odd' : 'day-even';
+        const dayNumber = dayIdx + 1;
 
         html += `
             <div class="section day-section ${dayClass}">
+                <div class="count-number">${dayNumber}</div>
                 <div class="section-controls">
                     <button class="collapse-btn" onclick="toggleSection('day-${dayIdx}')">
                         <span class="collapse-icon ${collapsedSections['day-' + dayIdx] ? 'collapsed' : ''}">▼</span>
@@ -411,14 +413,16 @@ function render() {
         `;
         
         day.activities.forEach((act, actIdx) => {
+            const actNumber = actIdx + 1;
             html += `
                 <div class="activity-item">
+                    <div class="activity-count">${actNumber}</div>
                     <div class="activity-header">
                         <div style="flex: 1;">
                             <label class="form-label" style="margin-bottom: 4px;">Time</label>
-                            <input type="text" class="activity-time" value="${escapeHtml(act.time || '')}" placeholder="e.g., 01:45 AM" style="width: 100%;">
+                            <input type="text" class="activity-time" value="${escapeHtml(act.time || '')}" placeholder="e.g., 01:45 AM" style="width: fit-content;">
                         </div>
-                        <button class="btn btn-icon" data-tooltip="Delete Activity" onclick="removeActivity(${dayIdx}, ${actIdx})" style="margin-top: 20px;">×</button>
+                        <button class="btn btn-icon" data-tooltip="Delete Activity" onclick="removeActivity(${dayIdx}, ${actIdx})">×</button>
                     </div>
                     <div style="margin-top: 10px;">
                         <label class="form-label" style="margin-bottom: 4px;">Description</label>
@@ -429,8 +433,10 @@ function render() {
             if (act.subItems && act.subItems.length > 0) {
                 html += '<div class="nested-bullets">';
                 act.subItems.forEach((sub, subIdx) => {
+                    const subNumber = subIdx + 1;
                     html += `
                         <div class="bullet-item">
+                            <div class="sub-count">${subNumber}</div>
                             <input type="text" class="sub-item-input" value="${escapeHtml(sub || '')}" placeholder="Sub-item">
                             <button class="btn btn-icon" data-tooltip="Delete Sub-item" onclick="removeSubItem(${dayIdx}, ${actIdx}, ${subIdx})">×</button>
                         </div>
@@ -455,8 +461,10 @@ function render() {
     html += '<button class="btn btn-success btn-center" onclick="addDay()">+ Add Day</button><div class="separator"></div>';
 
     data.sections.forEach((section, secIdx) => {
+        const secNumber = secIdx + 1;
         html += `
             <div class="section custom-section">
+                <div class="count-number">${secNumber}</div>
                 <div class="section-controls">
                     <button class="collapse-btn" onclick="toggleSection('sec-${secIdx}')">
                         <span class="collapse-icon ${collapsedSections['sec-' + secIdx] ? 'collapsed' : ''}">▼</span>
@@ -471,16 +479,18 @@ function render() {
         `;
         
         section.items.forEach((item, itemIdx) => {
+            const itemNumber = itemIdx + 1;
             html += `
                 <div class="instruction-item">
+                    <div class="instruction-count">${itemNumber}</div>
                     <div class="instruction-header">
                         <div class="instruction-content">
-                            <label class="form-label" style="margin-bottom: 4px;">Title</label>
+                            <label class="form-label" style="margin-bottom: 4px; margin-top: 30px;">Title</label>
                             <input type="text" class="instruction-title-input" value="${escapeHtml(item.title || '')}" placeholder="e.g., Identity">
                             <label class="form-label" style="margin-bottom: 4px; margin-top: 8px;">Description</label>
                             <textarea class="instruction-desc-input" placeholder="Description">${escapeHtml(item.description || '')}</textarea>
                         </div>
-                        <button class="btn btn-icon" data-tooltip="Delete Item" onclick="removeSectionItem(${secIdx}, ${itemIdx})" style="margin-top: 20px;">×</button>
+                        <button class="btn btn-icon" data-tooltip="Delete Item" onclick="removeSectionItem(${secIdx}, ${itemIdx})">×</button>
                     </div>
                 </div>
             `;
