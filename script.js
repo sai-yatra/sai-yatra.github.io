@@ -518,7 +518,7 @@ function render() {
             </div>
             <div class="section-body ${collapsedSections['footer'] ? 'collapsed' : ''}">
                 <div class="form-group">
-                    <label class="form-label">Footer Text</label>
+                    
                     <textarea id="footer" placeholder="Footer message">${escapeHtml(data.footer || '')}</textarea>
                 </div>
             </div>
