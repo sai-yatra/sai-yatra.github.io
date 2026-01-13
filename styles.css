@@ -263,7 +263,7 @@ body {
 .count-number {
     position: absolute;
     top: 0;
-    left: 30%;
+    left: 10%;
     font-size: 50px;
     font-weight: 900;
     color: var(--count-color);
@@ -451,7 +451,7 @@ textarea {
 .activity-count {
     position: absolute;
     top: 8px;
-    right: 30%;
+    right: 10%;
     font-size: 48px;
     font-weight: 900;
     color: var(--count-color);
@@ -485,7 +485,7 @@ textarea {
 .instruction-count {
     position: absolute;
     top: 8px;
-    right: 30%;
+    right: 10%;
     font-size: 48px;
     font-weight: 900;
     color: var(--count-color);

@@ -435,7 +435,7 @@ function render() {
             const actNumber = actIdx + 1;
             html += `
                 <div class="activity-item">
-                    <div class="activity-count">-${actNumber}-</div>
+                    <div class="activity-count">${actNumber}</div>
                     <div class="activity-header">
                         <div style="flex: 1;">
                             <label class="form-label" style="margin-bottom: 4px;">Time</label>
@@ -501,7 +501,7 @@ function render() {
             const itemNumber = itemIdx + 1;
             html += `
                 <div class="instruction-item">
-                    <div class="instruction-count">-${itemNumber}-</div>
+                    <div class="instruction-count">${itemNumber}</div>
                     <div class="instruction-header">
                         <div class="instruction-content">
                             <label class="form-label" style="margin-bottom: 4px; margin-top: 30px;">Title</label>
