@@ -2,7 +2,7 @@ const STORAGE_KEY = 'sai_itinerary_data';
 const THEME_KEY = 'sai_itinerary_theme';
 
 const originalData = {
-    title: "Shirdi Sai Yatra Itinerary / சீரடி சாய் யாத்திரை",
+    title: "Shirdi Sai Yatra / சீரடி சாய் யாத்திரை",
     dates: "Jan 17 - Jan 19, 2026",
     organizer: "Sai Balaji V",
     contacts: "9500008901, 9500025901, 9500045901",
@@ -395,7 +395,8 @@ function render() {
                     <button class="btn btn-danger btn-small" onclick="removeDay(${dayIdx})">Remove Day</button>
                 </div>
                 <div class="section-header">
-                    <input type="text" class="section-title day-title" value="${escapeHtml(day.title || '')}" placeholder="Day title">
+                    <label class="form-label">Day Title</label>
+                    <input type="text" class="section-title day-title" value="${escapeHtml(day.title || '')}" placeholder="e.g., Day 1: Saturday, 17/01/2026">
                 </div>
                 <div class="section-body ${collapsedSections['day-' + dayIdx] ? 'collapsed' : ''}">
         `;
@@ -404,10 +405,16 @@ function render() {
             html += `
                 <div class="activity-item">
                     <div class="activity-header">
-                        <input type="text" class="activity-time" value="${escapeHtml(act.time || '')}" placeholder="Time">
-                        <button class="btn btn-icon" data-tooltip="Delete Activity" onclick="removeActivity(${dayIdx}, ${actIdx})">×</button>
+                        <div style="flex: 1;">
+                            <label class="form-label" style="margin-bottom: 4px;">Time</label>
+                            <input type="text" class="activity-time" value="${escapeHtml(act.time || '')}" placeholder="e.g., 01:45 AM" style="width: 100%;">
+                        </div>
+                        <button class="btn btn-icon" data-tooltip="Delete Activity" onclick="removeActivity(${dayIdx}, ${actIdx})" style="margin-top: 20px;">×</button>
                     </div>
-                    <textarea class="activity-desc" placeholder="Activity description">${escapeHtml(act.description || '')}</textarea>
+                    <div style="margin-top: 10px;">
+                        <label class="form-label" style="margin-bottom: 4px;">Description</label>
+                        <textarea class="activity-desc" placeholder="Activity description">${escapeHtml(act.description || '')}</textarea>
+                    </div>
             `;
             
             if (act.subItems && act.subItems.length > 0) {
@@ -448,7 +455,8 @@ function render() {
                     <button class="btn btn-danger btn-small" onclick="removeSection(${secIdx})">Remove Section</button>
                 </div>
                 <div class="section-header">
-                    <input type="text" class="section-title section-title-input" value="${escapeHtml(section.title || '')}" placeholder="Section title">
+                    <label class="form-label">Section Title</label>
+                    <input type="text" class="section-title section-title-input" value="${escapeHtml(section.title || '')}" placeholder="e.g., Important Instructions">
                 </div>
                 <div class="section-body ${collapsedSections['sec-' + secIdx] ? 'collapsed' : ''}">
         `;
@@ -458,10 +466,12 @@ function render() {
                 <div class="instruction-item">
                     <div class="instruction-header">
                         <div class="instruction-content">
-                            <input type="text" class="instruction-title-input" value="${escapeHtml(item.title || '')}" placeholder="Title (e.g., Identity)">
-                            <textarea class="instruction-desc-input" placeholder="Description" style="margin-top: 8px;">${escapeHtml(item.description || '')}</textarea>
+                            <label class="form-label" style="margin-bottom: 4px;">Title</label>
+                            <input type="text" class="instruction-title-input" value="${escapeHtml(item.title || '')}" placeholder="e.g., Identity">
+                            <label class="form-label" style="margin-bottom: 4px; margin-top: 8px;">Description</label>
+                            <textarea class="instruction-desc-input" placeholder="Description">${escapeHtml(item.description || '')}</textarea>
                         </div>
-                        <button class="btn btn-icon" data-tooltip="Delete Item" onclick="removeSectionItem(${secIdx}, ${itemIdx})">×</button>
+                        <button class="btn btn-icon" data-tooltip="Delete Item" onclick="removeSectionItem(${secIdx}, ${itemIdx})" style="margin-top: 20px;">×</button>
                     </div>
                 </div>
             `;
@@ -508,7 +518,7 @@ function render() {
 function addDay() {
     autoSave();
     data.days.push({
-        title: 'New Day',
+        title: '',
         activities: []
     });
     render();
@@ -560,7 +570,7 @@ function removeSubItem(dayIdx, actIdx, subIdx) {
 function addSection() {
     autoSave();
     data.sections.push({
-        title: 'New Section',
+        title: '',
         items: []
     });
     render();

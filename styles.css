@@ -301,12 +301,11 @@ textarea {
 .activity-header {
     display: flex;
     gap: 10px;
-    align-items: center;
-    margin-bottom: 10px;
+    align-items: flex-start;
 }
 
 .activity-time {
-    width: 130px;
+    width: 100%;
 }
 
 .instruction-item {
