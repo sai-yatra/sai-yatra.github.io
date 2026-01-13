@@ -132,6 +132,25 @@ function resetToOriginal() {
     }
 }
 
+function startBlank() {
+    if (confirm('Are you sure you want to start with blank data? This will clear all current content.')) {
+        localStorage.removeItem(STORAGE_KEY);
+        data = {
+            title: '',
+            dates: '',
+            organizer: '',
+            contacts: '',
+            days: [],
+            sections: [],
+            footer: ''
+        };
+        collapsedSections = {};
+        render();
+        showToast('Started with blank data!');
+        toggleMenu();
+    }
+}
+
 // Close menu when clicking outside
 document.addEventListener('click', (e) => {
     const menu = document.getElementById('dropdownMenu');
@@ -363,13 +382,13 @@ function render() {
                 <button class="collapse-btn" onclick="toggleSection('basic')">
                     <span class="collapse-icon ${collapsedSections['basic'] ? 'collapsed' : ''}">▼</span>
                 </button>
-            </div>
-            <div class="section-header">
-                <div class="form-label">Basic Information</div>
+                <div class="section-header">
+                    <div class="form-label">Basic Information</div>
+                </div>
             </div>
             <div class="section-body ${collapsedSections['basic'] ? 'collapsed' : ''}">
                 <div class="form-group">
-                    <label class="form-label">Title</label>
+                    <label class="form-label">Itinerary Title</label>
                     <input type="text" id="title" value="${escapeHtml(data.title || '')}" placeholder="Itinerary Title">
                 </div>
                 
@@ -399,7 +418,7 @@ function render() {
         html += `
             <div class="section day-section ${dayClass}">
                 <div class="count-number">day ${dayNumber}</div>
-                <div class="section-controls">
+                <div class="section-controls no-border-bottom">
                     <button class="collapse-btn" onclick="toggleSection('day-${dayIdx}')">
                         <span class="collapse-icon ${collapsedSections['day-' + dayIdx] ? 'collapsed' : ''}">▼</span>
                     </button>
@@ -425,7 +444,7 @@ function render() {
                         <button class="btn btn-icon" data-tooltip="Delete Activity" onclick="removeActivity(${dayIdx}, ${actIdx})">×</button>
                     </div>
                     <div style="margin-top: 10px;">
-                        <label class="form-label" style="margin-bottom: 4px;">Description</label>
+                        <label class="form-label" style="margin-bottom: 4px;">Activity Description</label>
                         <textarea class="activity-desc" placeholder="Activity description">${escapeHtml(act.description || '')}</textarea>
                     </div>
             `;
@@ -437,14 +456,14 @@ function render() {
                     html += `
                         <div class="bullet-item">
                             <div class="sub-count">${subNumber}</div>
-                            <input type="text" class="sub-item-input" value="${escapeHtml(sub || '')}" placeholder="Sub-item">
-                            <button class="btn btn-icon" data-tooltip="Delete Sub-item" onclick="removeSubItem(${dayIdx}, ${actIdx}, ${subIdx})">×</button>
+                            <input type="text" class="sub-item-input" value="${escapeHtml(sub || '')}" placeholder="Sub-activity">
+                            <button class="btn btn-icon" data-tooltip="Delete Sub-activity" onclick="removeSubItem(${dayIdx}, ${actIdx}, ${subIdx})">×</button>
                         </div>
                     `;
                 });
-                html += `<button class="btn btn-primary btn-small" onclick="addSubItem(${dayIdx}, ${actIdx})">+ Add Sub-item</button></div>`;
+                html += `<button class="btn btn-primary btn-small" onclick="addSubItem(${dayIdx}, ${actIdx})">+ Add Sub-activity</button></div>`;
             } else {
-                html += `<button class="btn btn-primary btn-small" style="margin-top: 10px;" onclick="addSubItem(${dayIdx}, ${actIdx})">+ Add Sub-items</button>`;
+                html += `<button class="btn btn-primary btn-small" style="margin-top: 10px;" onclick="addSubItem(${dayIdx}, ${actIdx})">+ Add Sub-activities</button>`;
             }
             
             html += '</div>';
@@ -464,8 +483,8 @@ function render() {
         const secNumber = secIdx + 1;
         html += `
             <div class="section custom-section">
-                <div class="count-number">section ${secNumber}</div>
-                <div class="section-controls">
+                <div class="count-number">#${secNumber}</div>
+                <div class="section-controls no-border-bottom">
                     <button class="collapse-btn" onclick="toggleSection('sec-${secIdx}')">
                         <span class="collapse-icon ${collapsedSections['sec-' + secIdx] ? 'collapsed' : ''}">▼</span>
                     </button>
@@ -512,13 +531,13 @@ function render() {
                 <button class="collapse-btn" onclick="toggleSection('footer')">
                     <span class="collapse-icon ${collapsedSections['footer'] ? 'collapsed' : ''}">▼</span>
                 </button>
-            </div>
-            <div class="section-header">
-                <div class="form-label">Footer Message</div>
+                <div class="section-header">
+                    <div class="form-label">Footer Message</div>
+                </div>
             </div>
             <div class="section-body ${collapsedSections['footer'] ? 'collapsed' : ''}">
                 <div class="form-group">
-                    
+                    <label class="form-label">Footer Text</label>
                     <textarea id="footer" placeholder="Footer message">${escapeHtml(data.footer || '')}</textarea>
                 </div>
             </div>
@@ -591,7 +610,7 @@ function addSubItem(dayIdx, actIdx) {
 }
 
 function removeSubItem(dayIdx, actIdx, subIdx) {
-    if (confirm('Are you sure you want to remove this sub-item?')) {
+    if (confirm('Are you sure you want to remove this sub-activity?')) {
         autoSave();
         data.days[dayIdx].activities[actIdx].subItems.splice(subIdx, 1);
         if (data.days[dayIdx].activities[actIdx].subItems.length === 0) {
@@ -638,21 +657,73 @@ function removeSectionItem(secIdx, itemIdx) {
 function copyFormatted() {
     autoSave();
     
-    let text = `*${data.title}*\n\n`;
-    text += `Dates: *${data.dates}*\n`;
-    text += `Organizer: *${data.organizer}* ( ${data.contacts} )\n\n`;
-    text += `--------------------------\n\n`;
+    let text = '';
+    
+    // Only add title if it exists
+    if (data.title && data.title.trim()) {
+        text += `*${data.title}*\n\n`;
+    }
+    
+    // Only add dates if it exists
+    if (data.dates && data.dates.trim()) {
+        text += `Dates: *${data.dates}*\n`;
+    }
+    
+    // Only add organizer and contacts if they exist
+    if (data.organizer && data.organizer.trim()) {
+        text += `Organizer: *${data.organizer}*`;
+        if (data.contacts && data.contacts.trim()) {
+            text += ` ( ${data.contacts} )`;
+        }
+        text += '\n';
+    } else if (data.contacts && data.contacts.trim()) {
+        text += `Contact: ${data.contacts}\n`;
+    }
+    
+    // Add separator only if there's content above
+    if (text) {
+        text += '\n--------------------------\n\n';
+    }
 
     data.days.forEach((day, idx) => {
-        text += `*${day.title}*\n\n`;
+        // Skip day if title is empty and no activities
+        if (!day.title || !day.title.trim()) {
+            if (!day.activities || day.activities.length === 0) {
+                return;
+            }
+        }
+        
+        if (day.title && day.title.trim()) {
+            text += `*${day.title}*\n\n`;
+        }
+        
         day.activities.forEach(act => {
-            text += `• *${act.time}*: ${act.description}\n`;
+            // Skip activity if both time and description are empty
+            if ((!act.time || !act.time.trim()) && (!act.description || !act.description.trim())) {
+                return;
+            }
+            
+            // Format activity
+            if (act.time && act.time.trim()) {
+                text += `• *${act.time}*`;
+                if (act.description && act.description.trim()) {
+                    text += `: ${act.description}`;
+                }
+                text += '\n';
+            } else if (act.description && act.description.trim()) {
+                text += `• ${act.description}\n`;
+            }
+            
+            // Add sub-items only if they have content
             if (act.subItems && act.subItems.length > 0) {
                 act.subItems.forEach(sub => {
-                    text += `     - ${sub}\n`;
+                    if (sub && sub.trim()) {
+                        text += `     - ${sub}\n`;
+                    }
                 });
             }
         });
+        
         if (idx < data.days.length - 1) {
             text += `\n-------------\n\n`;
         } else {
@@ -661,16 +732,58 @@ function copyFormatted() {
     });
 
     data.sections.forEach(section => {
+        // Skip section if title is empty and no items
+        if (!section.title || !section.title.trim()) {
+            if (!section.items || section.items.length === 0) {
+                return;
+            }
+        }
+        
+        // Check if section has any valid items
+        const hasValidItems = section.items && section.items.some(item => 
+            (item.title && item.title.trim()) || (item.description && item.description.trim())
+        );
+        
+        if (!hasValidItems) {
+            return;
+        }
+        
         text += `--------------------------\n\n`;
-        text += `*${section.title}*\n\n`;
-        section.items.forEach((item, idx) => {
-            text += `*${idx + 1}. ${item.title}*: ${item.description}\n`;
+        if (section.title && section.title.trim()) {
+            text += `*${section.title}*\n\n`;
+        }
+        
+        let itemIndex = 1;
+        section.items.forEach((item) => {
+            // Skip item if both title and description are empty
+            if ((!item.title || !item.title.trim()) && (!item.description || !item.description.trim())) {
+                return;
+            }
+            
+            if (item.title && item.title.trim()) {
+                text += `*${itemIndex}. ${item.title}*`;
+                if (item.description && item.description.trim()) {
+                    text += `: ${item.description}`;
+                }
+                text += '\n';
+            } else if (item.description && item.description.trim()) {
+                text += `*${itemIndex}.* ${item.description}\n`;
+            }
+            itemIndex++;
         });
         text += `\n`;
     });
 
-    text += `--------------------------\n\n`;
-    text += `*${data.footer}*\n`;
+    // Only add footer if it exists
+    if (data.footer && data.footer.trim()) {
+        text += `--------------------------\n\n`;
+        text += `*${data.footer}*\n`;
+    }
+
+    if (!text.trim()) {
+        showToast('No content to copy!');
+        return;
+    }
 
     navigator.clipboard.writeText(text).then(() => {
         showToast('Copied to clipboard!');

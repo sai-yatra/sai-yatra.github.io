@@ -262,7 +262,7 @@ body {
 
 .count-number {
     position: absolute;
-    top: 5px;
+    top: 0;
     left: 30%;
     font-size: 50px;
     font-weight: 900;
@@ -281,6 +281,10 @@ body {
     align-items: center;
     position: relative;
     z-index: 2;
+}
+
+.no-border-bottom {
+    border-bottom: none;
 }
 
 .collapse-btn {
@@ -655,7 +659,7 @@ textarea {
     .container {
         padding: 0 10px 10px 10px;
     }
-
+    
     .content {
         padding: 12px;
     }
@@ -677,6 +681,7 @@ textarea {
     }
 
     .count-number {
+        top: 5px;
         /* font-size: 60px;
         top: 15px;
         right: 15px; */
