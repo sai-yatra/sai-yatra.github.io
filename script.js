@@ -398,7 +398,7 @@ function render() {
 
         html += `
             <div class="section day-section ${dayClass}">
-                <div class="count-number">${dayNumber}</div>
+                <div class="count-number">day ${dayNumber}</div>
                 <div class="section-controls">
                     <button class="collapse-btn" onclick="toggleSection('day-${dayIdx}')">
                         <span class="collapse-icon ${collapsedSections['day-' + dayIdx] ? 'collapsed' : ''}">▼</span>
@@ -416,11 +416,11 @@ function render() {
             const actNumber = actIdx + 1;
             html += `
                 <div class="activity-item">
-                    <div class="activity-count">${actNumber}</div>
+                    <div class="activity-count">-${actNumber}-</div>
                     <div class="activity-header">
                         <div style="flex: 1;">
                             <label class="form-label" style="margin-bottom: 4px;">Time</label>
-                            <input type="text" class="activity-time" value="${escapeHtml(act.time || '')}" placeholder="e.g., 01:45 AM" style="width: fit-content;">
+                            <input type="text" class="activity-time" value="${escapeHtml(act.time || '')}" placeholder="e.g., 01:45 AM" style="width: fit-content; max-width: 180px;">
                         </div>
                         <button class="btn btn-icon" data-tooltip="Delete Activity" onclick="removeActivity(${dayIdx}, ${actIdx})">×</button>
                     </div>
@@ -464,7 +464,7 @@ function render() {
         const secNumber = secIdx + 1;
         html += `
             <div class="section custom-section">
-                <div class="count-number">${secNumber}</div>
+                <div class="count-number">section ${secNumber}</div>
                 <div class="section-controls">
                     <button class="collapse-btn" onclick="toggleSection('sec-${secIdx}')">
                         <span class="collapse-icon ${collapsedSections['sec-' + secIdx] ? 'collapsed' : ''}">▼</span>
@@ -482,7 +482,7 @@ function render() {
             const itemNumber = itemIdx + 1;
             html += `
                 <div class="instruction-item">
-                    <div class="instruction-count">${itemNumber}</div>
+                    <div class="instruction-count">-${itemNumber}-</div>
                     <div class="instruction-header">
                         <div class="instruction-content">
                             <label class="form-label" style="margin-bottom: 4px; margin-top: 30px;">Title</label>

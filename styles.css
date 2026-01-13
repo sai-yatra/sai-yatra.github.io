@@ -262,7 +262,7 @@ body {
 
 .count-number {
     position: absolute;
-    /* top: 20px; */
+    top: 5px;
     left: 30%;
     font-size: 50px;
     font-weight: 900;
