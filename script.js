@@ -114,6 +114,13 @@ function toggleMenu() {
     menu.classList.toggle('show');
 }
 
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
 function resetToOriginal() {
     if (confirm('Are you sure you want to reset all data to original? This cannot be undone.')) {
         localStorage.removeItem(STORAGE_KEY);
@@ -559,12 +566,14 @@ function addSubItem(dayIdx, actIdx) {
 }
 
 function removeSubItem(dayIdx, actIdx, subIdx) {
-    autoSave();
-    data.days[dayIdx].activities[actIdx].subItems.splice(subIdx, 1);
-    if (data.days[dayIdx].activities[actIdx].subItems.length === 0) {
-        delete data.days[dayIdx].activities[actIdx].subItems;
+    if (confirm('Are you sure you want to remove this sub-item?')) {
+        autoSave();
+        data.days[dayIdx].activities[actIdx].subItems.splice(subIdx, 1);
+        if (data.days[dayIdx].activities[actIdx].subItems.length === 0) {
+            delete data.days[dayIdx].activities[actIdx].subItems;
+        }
+        render();
     }
-    render();
 }
 
 function addSection() {
