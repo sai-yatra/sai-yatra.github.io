@@ -551,6 +551,7 @@ textarea {
 .actions {
     display: flex;
     gap: 12px;
+    justify-content: center;
     flex-wrap: wrap;
     margin-top: 20px;
     padding-top: 20px;
@@ -597,7 +598,7 @@ textarea {
 
 .toast {
     position: fixed;
-    top: 20px;
+    top: 100px;
     right: 20px;
     background: var(--success-color);
     color: white;
